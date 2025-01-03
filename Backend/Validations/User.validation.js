@@ -7,7 +7,7 @@ const validateUser = [
         .notEmpty().withMessage('First Name is required.')
         .trim()
         .isLength({ min: 3 }).withMessage('First Name must be at least 3 characters long.'),
-
+       
     check('fullName.lastName')
         .optional()
         .isString().withMessage('Last Name must be a string.')
@@ -37,5 +37,19 @@ const handleValidationErrors = (req, res, next) => {
     next();
 };
 
-export { validateUser, handleValidationErrors };
+
+const loginUser = [
+    check('email')
+        .isEmail().withMessage('Invalid email address.')
+        .notEmpty().withMessage('Email is required.')
+        .trim(),
+
+    check('password')
+        .notEmpty().withMessage('Password is required.')
+        .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long.')
+]; 
+
+
+
+export { validateUser, handleValidationErrors , loginUser };
 
