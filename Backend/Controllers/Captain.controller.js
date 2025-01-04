@@ -1,4 +1,5 @@
 import { CaptainModel } from "../Models/Captain.model.js";
+import { BlacklistedToken } from "../Models/BlacklistToken.model.js";
 
 
 // Register a new captain
@@ -45,7 +46,7 @@ const loginCaptain = async (req, res) => {
           const token = captain.generateAuthToken();
           res.cookie('token', token);
           return res.status(200).json({ message: 'Captain logged in successfully!', token, captain });
-          
+
      } catch (error) {
           console.error("Error during captain login:", error.message);
           res.status(500).json({ message: 'Something went wrong!', error: error.message });
@@ -53,4 +54,16 @@ const loginCaptain = async (req, res) => {
 };
 
 
-export {registerCaptain , loginCaptain};
+const authProfile = async (req, res) => {
+     res.status(200).json({ message: 'Captain authorized successfully!', captain: req.captain });
+}
+
+const logoutCaptain = async (req, res) => {
+     const token = req.cookies.token;
+     const newBlacklistedToken = new BlacklistedToken({ token });
+     await newBlacklistedToken.save();
+     res.clearCookie('token');
+     res.status(200).json({ message: 'Captain logged out successfully!' });
+}
+
+export {registerCaptain , loginCaptain ,logoutCaptain, authProfile};
