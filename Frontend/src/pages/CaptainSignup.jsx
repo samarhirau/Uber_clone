@@ -23,41 +23,65 @@ const CaptainSignup = () => {
 
 
   const submitHandler = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
+  
+    // Validate firstName field
+    if (!firstName || typeof firstName !== 'string') {
+      console.error("First Name must be a valid string.");
+      return;
+    }
+  
+    if (firstName.length < 3) {
+      console.error("First Name must be at least 3 characters long.");
+      return;
+    }
+  
     const captainData = {
-      fullname: {
-        firstname: firstName,
-        lastname: lastName
+      fullName: {
+        firstName,
+        lastName,
       },
-      email: email,
-      password: password,
+      email,
+      password,
       vehicle: {
         color: vehicleColor,
         plate: vehiclePlate,
         capacity: vehicleCapacity,
-        vehicleType: vehicleType
+        vehicleType: vehicleType,
+      },
+    };
+  
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/captains/register`, captainData);
+  
+      if (response.status === 201) {
+        const data = response.data;
+        setCaptain(data.captain);
+        localStorage.setItem('token', data.token);
+        navigate('/captain-home');
+      }
+    } catch (error) {
+      console.error("Signup error:", error.response ? error.response.data : error.message);
+      if (error.response && error.response.data && Array.isArray(error.response.data.errors)) {
+        error.response.data.errors.forEach((err, index) => {
+          console.error(`Error ${index + 1}:`, err);
+        });
       }
     }
-
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/captains/register`, captainData)
-
-    if (response.status === 201) {
-      const data = response.data
-      setCaptain(data.captain)
-      localStorage.setItem('token', data.token)
-      navigate('/captain-home')
-    }
-
-    setEmail('')
-    setFirstName('')
-    setLastName('')
-    setPassword('')
-    setVehicleColor('')
-    setVehiclePlate('')
-    setVehicleCapacity('')
-    setVehicleType('')
-
-  }
+  
+    // Reset form fields
+    setEmail('');
+    setFirstName('');
+    setLastName('');
+    setPassword('');
+    setVehicleColor('');
+    setVehiclePlate('');
+    setVehicleCapacity('');
+    setVehicleType('');
+  };
+  
+  
+  
   return (
     <div className='py-5 px-5 h-screen flex flex-col justify-between'>
       <div>

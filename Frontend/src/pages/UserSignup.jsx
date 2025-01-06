@@ -19,35 +19,63 @@ const UserSignup = () => {
   const { user, setUser } = useContext(UserDataContext)
 
 
-
-
   const submitHandler = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
+  
+    // Ensure fields are not empty and meet validation
+    // if (!firstName || firstName.trim().length < 3) {
+    //   alert('First Name must be at least 3 characters long.');
+    //   return;
+    // }
+    // if (!lastName || lastName.trim().length < 1) {
+    //   alert('Last Name is required.');
+    //   return;
+    // }
+    // if (!email || !/\S+@\S+\.\S+/.test(email)) {
+    //   alert('Please enter a valid email address.');
+    //   return;
+    // }
+    // if (!password || password.length < 6) {
+    //   alert('Password must be at least 6 characters long.');
+    //   return;
+    // }
+  
     const newUser = {
-      fullname: {
-        firstname: firstName,
-        lastname: lastName
+      fullName: {
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
       },
-      email: email,
-      password: password
+      email: email.trim(),
+      password: password.trim(),
+    };
+  
+    // console.log('Full Payload being sent:', newUser);
+  
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/users/register`, newUser);
+  
+      if (response.status === 201) {
+        const data = response.data;
+        setUser(data.user);
+        localStorage.setItem('token', data.token);
+        navigate('/home');
+      }
+  
+      setEmail('');
+      setFirstName('');
+      setLastName('');
+      setPassword('');
+    } catch (error) {
+      console.error('Error:', error.response?.data || error.message);
+      if (error.response?.data?.message) {
+        alert(error.response.data.message);
+      } else {
+        alert('Signup failed. Please try again.');
+      }
     }
-
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, newUser)
-
-    if (response.status === 201) {
-      const data = response.data
-      setUser(data.user)
-      localStorage.setItem('token', data.token)
-      navigate('/home')
-    }
-
-
-    setEmail('')
-    setFirstName('')
-    setLastName('')
-    setPassword('')
-
-  }
+  };
+  
+  
   return (
     <div>
       <div className='p-7 h-screen flex flex-col justify-between'>

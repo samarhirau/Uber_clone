@@ -3,7 +3,7 @@ import {BlacklistedToken} from "../Models/BlacklistToken.model.js";
 
 const registerUser = async (req, res) => {
 
-
+    
      try {
             const { email } = req.body;
          const existingUser = await userModel.findOne({ email });
@@ -47,13 +47,22 @@ const loginUser = async (req, res) => {
         const token = user.toGenerateAuthToken();
 
         // Set cookie before sending the response
-        res.cookie('token', token);
+        // res.cookie('token', token);
+        // After successful login response
+
+
 
         // {
         //     httpOnly: true, // Ensures cookie is not accessible via JavaScript
         //     secure: process.env.NODE_ENV === 'production', // Send only over HTTPS in production
         //     maxAge: 24 * 60 * 60 * 1000, // Cookie expiration in milliseconds (e.g., 1 day)
         // }
+        res.cookie('token', token, {
+            httpOnly: true,  // Prevents access to cookie via JavaScript
+            secure: process.env.NODE_ENV === 'production',  // Ensures it's sent over HTTPS in production
+            maxAge: 24 * 60 * 60 * 1000,  // Cookie expiration time (1 day)
+        });
+        
 
         return res.status(200).json({ 
             message: 'User logged in successfully!', 

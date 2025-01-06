@@ -1,4 +1,5 @@
 import { CaptainModel } from "../Models/Captain.model.js";
+import {userModel} from "../Models/User.model.js"
 import {BlacklistedToken} from "../Models/BlacklistToken.model.js";
 import jwt from "jsonwebtoken";
 
@@ -34,6 +35,9 @@ const authUser = async (req, res, next) => {
         return res.status(401).json({ message: 'Authorization denied! Invalid token.' });
     }
 };
+
+
+
 
 
 const authCaptain = async (req, res, next) => {

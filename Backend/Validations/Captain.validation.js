@@ -50,10 +50,12 @@ const validateCaptain = [
           .isIn(['car', 'van', 'bike']).withMessage('Invalid Vehicle Type.'),
 
      check('vehicle.location.lat')
+     .optional()
           .isNumeric().withMessage('Latitude must be a number.')
           .notEmpty().withMessage('Latitude is required.'),
 
      check('vehicle.location.lng')
+     .optional()
           .isNumeric().withMessage('Longitude must be a number.')
           .notEmpty().withMessage('Longitude is required.')
      ];
